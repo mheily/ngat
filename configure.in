@@ -1,0 +1,4 @@
+PACKAGE=ngat
+VERSION=0.1
+CHECK_FUNCTIONS=strlcpy
+CHECK_HEADERS="event.h regex.h"
