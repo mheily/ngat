@@ -54,11 +54,11 @@ build: $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_
 	@true
 
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : 
-	$(CC) $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES)
+	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES)
 	@echo $($(@)_SOURCES) >> $(MANIFEST)
 
 $(lib_LIBRARIES) : 
-	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c $($(@)_SOURCES)
+	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -fPIC -c $($(@)_SOURCES)
 	$(LD) $(LDFLAGS) $($(@)_LDFLAGS) -o lib$@.so.$(VERSION)	\
 		`echo $($(@)_SOURCES) | sed 's/\.c/\.o/g'`
 	ar rs lib$(@).a *.o
