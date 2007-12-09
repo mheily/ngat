@@ -1,3 +1,4 @@
+#		$Id: $
 #
 # Copyright (c) 2007 Mark Heily <mark@heily.com>
 #
@@ -16,12 +17,14 @@
 
 # Differences btwn Automake and mconf:
 #   - man_MANS are considered source and included in `make dist'
+#     do not use dist_man_MANS
+#   - man1_MANS, man2_MANS, etc., are not supported; use man_MANS instead
 #   - Use CFLAGS instead of AM_CFLAGS
+#   HAVE_CONFIG_H is not defined and should not be used in program sources.
+#   A global SOURCES variable is required, and should contain a list of
+#   all source code files in the project.
 
 default: build
-
-config.mk:
-	./configure
 
 include config.mk
 
@@ -30,10 +33,9 @@ include config.mk
 CC ?=		cc
 LD ?=		ld
 
-MANIFEST =	config.lst
-FILES = 	$(EXTRA_DIST) $(dist_man_MANS) $(man_MANS) \
+FILES = 	$(SOURCES) $(EXTRA_DIST) $(man_MANS) \
 		$(data_DATA) $(pkgdata_DATA) \
-		configure configure.in Makefile.am Makefile
+		configure configure.in config.mk Makefile.am Makefile
 MAJOR = 	`echo $(VERSION) | awk -F. '{ $$1 }'`
 LDFLAGS = 	-shared -soname=lib$@.so.$(MAJOR)
 DISTDIR = 	$(PACKAGE)-$(VERSION)
@@ -50,22 +52,24 @@ MANDIR := $(DESTDIR)$(MANDIR)
 
 include Makefile.am
 
-build: $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_DATA)
+build: config.h $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_DATA)
 	@true
 
-$(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : 
-	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES)
-	@echo $($(@)_SOURCES) >> $(MANIFEST)
+config.h:
+	./configure 
+
+$(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
+	$(CC) $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES) $($(@)_LDADD)
 
 $(lib_LIBRARIES) : 
-	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -fPIC -c $($(@)_SOURCES)
+	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
+		$($(@)_SOURCES) $($(@)_LDADD)
 	$(LD) $(LDFLAGS) $($(@)_LDFLAGS) -o lib$@.so.$(VERSION)	\
 		`echo $($(@)_SOURCES) | sed 's/\.c/\.o/g'`
 	ar rs lib$(@).a *.o
-	@echo $($(@)_SOURCES) >> $(MANIFEST)
 
 clean:
-	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) *.o $(MANIFEST)
+	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) *.o 
 
 distclean: clean
 	rm -f config.mk config.sym config.h
@@ -73,7 +77,7 @@ distclean: clean
 check: $(check_PROGRAMS)
 	for prog in $(TESTS) ; do $$prog ; done
 
-dist: $(MANIFEST)
+dist: 
 	if [ -d $(DISTDIR) ] ; then \
 		cd $(DISTDIR) && rm -f $(FILES) && cd .. && rmdir $(DISTDIR) ; \
 	fi
@@ -99,7 +103,7 @@ install: build
 	for hdr in $(include_HEADERS) 				; \
 	  do install -D -m 644 $$hdr $(INCLUDEDIR)/$$hdr	; \
 	done
-	for man in $(man_MANS) 					; \
+	for man in $(man_MANS) $(dist_man_MANS)			; \
 	do 							  \
 	  section=`echo $$man | awk -F. '{ $$2 }'`		; \
 	  install -D -m 644 $$man $(MANDIR)/man$$section/$$man	; \
@@ -112,5 +116,3 @@ install: build
 	  do install -D -m 644 $$data $(PKGDATADIR)/$$data	; \
 	done
 	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
-
-$(MANIFEST) : build
