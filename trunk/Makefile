@@ -61,8 +61,8 @@ config.h:
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
 	$(CC) $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES) $($(@)_LDADD)
 
-$(lib_LIBRARIES) : 
-	$(CC) -DHAVE_CONFIG_H $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
+$(lib_LIBRARIES) : $(SOURCES)
+	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
 		$($(@)_SOURCES) $($(@)_LDADD)
 	$(LD) $(LDFLAGS) $($(@)_LDFLAGS) -o lib$@.so.$(VERSION)	\
 		`echo $($(@)_SOURCES) | sed 's/\.c/\.o/g'`

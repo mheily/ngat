@@ -2,11 +2,12 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-#define PACKAGE "ngat"
-#define VERSION "0.1"
 #define HAVE_STRLCPY 0
+#define HAVE_ASPRINTF 3
 #define HAVE_EVENT_H 2
 #define HAVE_REGEX_H 1
+#define PACKAGE "ngat"
+#define VERSION "0.2"
 #define PREFIX "/usr/local"
 #define BINDIR "/usr/local/bin"
 #define SBINDIR "/usr/local/sbin"

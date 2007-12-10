@@ -2,8 +2,138 @@
 <head>
 <title>Next-generation autotools</title>
 </head>
+<style>
+dt { padding-top: 0.7em; }
+dd { padding-top: 0.2em; }
+</style>
 <body>
-<h1>Next-gen autotools</h1>
+
+<h1>Next-generation autotools</h1>
+
+The "next-generation autotools" project (NGAT) is an effort to replace the current combination of GNU Autoconf, Automake, and Libtool with a faster, simpler, and more modern tool.
+
+<h2>Rationale</h2>
+
+GNU autotools are bloated, complex, and painfully slow to use. They clutter up your project with a bunch of generated files. Not everyone wants to learn macro programming in M4 just to be able to build a C program.
+
+<h2>Differences</h2>
+
+Shell script and Makefile
+<ul>
+
+</ul>
+
+<h2>Supported makefile targets</h2>
+
+NGAT provides the following Makefile targets:
+
+<table border=1>
+<tr><th>Target<th>Description</tr>
+<tr><td>all<td>Build all binaries and libraries</tr>
+<tr><td>check<td>Build and execute the test suite</tr>
+<tr><td>dist<td>Create a compressed tarball of all source code and data</tr>
+<tr><td>install<td>Install files to the filesystem</tr>
+<tr><td>clean<td>Remove all generated object files (*.o)</tr>
+<tr><td>distclean<td>Remove all generated object code and temporary files</tr>
+</table>
+
+<h2>Download</h2>
+
+To use NGAT in your project, you need two files: the Makefile and the configure script.
+<p>
+<a href="Makefile">Download the Makefile here</a><br>
+<a href="configure">Download the configure script here</a><br>
+<p>
+The source code is available from the Subversion repository and may be downloaded using the following command:
+
+
+
+<pre>
+svn checkout http://ngat.googlecode.com/svn/trunk/ ngat-read-only
+</pre>
+
+<h2>Configuration</h2>
+
+<h3>configure.in</h3>
+
+Unlike Autoconf, the <i>configure.in</i> file in NGAT is a shell script.
+
+<iframe src="configure.in" width="90%" height="*"></iframe>
+
+<h4>Variables</h4>
+
+A couple of variables must be defined within configure.in:
+
+<p>
+<dt>PACKAGE</dt>
+<dd>The package name of the project.</dd>
+
+<dt>VERSION</dt>
+<dd>The version number of the project</dd>
+
+<h4>Functions</h4>
+
+There are some predefined Bourne shell functions that can be used in configure.in. Feel free to create your own functions; the configure.in file is sourced by configure every time the './configure' command is issued.
+<p>
+
+<dt>check_symbol()</dt>
+<dd>Tests for the availability of a symbol in the system's C library
+</dd>
+
+<dt>check_header()</dt>
+<dd>Tests for the existence of a header file
+in the /usr/include directory.
+</dd>
+
+<h3>Makefile.am</h3>
+
+NGAT uses the Automake syntax in Makefile.am.
+
+<iframe src="Makefile.am" width="90%" height="100%"></iframe>
+
+HOWEVER, there are a few incompatibilies:
+<p>
+<ul>
+<li>Automake supports a generic man_MANS variable as well as individual
+man1_MANS, man2_MANS, man3_MANS, etc. NGAT only supports man_MANS.
+<li>NGAT considers manpages to be part of the distribution, so use man_MANS instead of dist_man_MANS
+<li>Use CFLAGS to store default compiler flags, not AM_CFLAGS
+<li>Automake defines the variable HAVE_CONFIG_H when compiling; NGAT does not support this variable
+</ul>
+
+In addition, as an extension, NGAT requires the use of the 'SOURCES' variable. The SOURCES variable should list all source code files in the project. 
+
+<p>
+Supported Automake variables are:
+<p>
+
+<dt>EXTRA_DIST</dt><dd>Extra files to be included in the source distribution</dd>
+<dt>lib_LIBRARIES</dt><dd>Libraries to be created</dd>
+<dt>bin_PROGRAMS</dt><dd>Programs to be installed under BINDIR</dd>
+<dt>sbin_PROGRAMS</dt><dd>Programs to be installed under SBINDIR</dd>
+<dt>check_PROGRAMS</dt><dd>Programs to be run during `make check'</dd>
+<dt>include_HEADERS</dt><dd>Headers to to be installed under INCLUDEDIR</dd>
+<dt>data_DATA</dt><dd>Data files to be installed under DATADIR</dd>
+<dt>pkgdata_DATA</dt><dd>Data files to be installed under PKGDATADIR</dd>
+
+
+
+<h2>License</h2>
+<pre>
+Copyright (c) 2007 Mark Heily &lt;devel@heily.com&gt;
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+ 
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+</pre>
 <hr>
 <center>
 <pre>
