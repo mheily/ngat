@@ -27,16 +27,36 @@ define_str() {
   echo "$id=$val" >> config.mk
 }
 
-check_symbol() {
-  count=`grep -c $1 config.sym`
-  SYMBOL=`echo $1 | tr 'a-z' 'A-Z'`
-  echo "#define HAVE_${SYMBOL} $count" >> config.h
+report() {
+  printf "checking for $1... "
+  if [ $2 > 0 ]
+  then
+    echo "yes"
+  else
+    echo "no"
+  fi
 }
 
+# Check if a symbol is defined in the C library
+check_symbol() {
+for sym in $@
+do
+  count=`grep -c $sym config.sym`
+  SYMBOL=`echo $sym | tr 'a-z' 'A-Z'`
+  echo "#define HAVE_${SYMBOL} $count" >> config.h
+  report $sym $count
+done
+}
+
+# Check if a header file exists in /usr/include
 check_header() {
-  exists=`find /usr/include -name $1 | wc -l`
-  HEADER=`echo $1 | tr 'a-z' 'A-Z' | tr '.' '_'`
+for hdr in $@
+do
+  exists=`find /usr/include -name $hdr | wc -l`
+  HEADER=`echo $hdr | tr 'a-z' 'A-Z' | tr '.' '_'`
   echo "#define HAVE_${HEADER} $exists" >> config.h
+  report $hdr $count
+done
 }
 
 # Generate a symbol table from the standard C library

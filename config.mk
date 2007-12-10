@@ -1,7 +1,7 @@
 # Automatically generated -- do not edit
 
 PACKAGE=ngat
-VERSION=0.1
+VERSION=0.2
 PREFIX=/usr/local
 BINDIR=/usr/local/bin
 SBINDIR=/usr/local/sbin

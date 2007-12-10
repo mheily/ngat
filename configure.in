@@ -1,4 +1,5 @@
 PACKAGE=ngat
-VERSION=0.1
-CHECK_FUNCTIONS=strlcpy
-CHECK_HEADERS="event.h regex.h"
+VERSION=0.2
+
+check_symbol strlcpy asprintf
+check_header event.h regex.h
