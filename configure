@@ -86,6 +86,19 @@ done
 # Run any tests given by configure.in
 test -x ./configure.in && . ./configure.in
 
+# If PACKAGE is not provided, use the name of the current directory
+# (without any version information)
+if [ -z "$PACKAGE" ]
+then
+  PACKAGE=`pwd | sed 's+.*/++; s/-[0-9].*//'`
+fi
+
+# If VERSION is not defined, set a reasonable default
+if [ -z "$VERSION" ]
+then
+  VERSION=0.1
+fi
+
 for id in PACKAGE VERSION
 do
 	eval "val=\$$id"
