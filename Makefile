@@ -37,7 +37,6 @@ FILES = 	$(SOURCES) $(EXTRA_DIST) $(man_MANS) \
 		$(data_DATA) $(pkgdata_DATA) \
 		configure configure.in config.mk Makefile.am Makefile
 MAJOR = 	`echo $(VERSION) | awk -F. '{ $$1 }'`
-LDFLAGS = 	-shared -soname=lib$@.so.$(MAJOR)
 DISTDIR = 	$(PACKAGE)-$(VERSION)
 
 # Prepend the 'DESTDIR' variable to all installation paths
@@ -52,24 +51,33 @@ MANDIR := $(DESTDIR)$(MANDIR)
 
 include Makefile.am
 
-build: config.h $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_DATA)
+build: config.h subdir-stamp $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_DATA)
 	@true
+
+subdir-stamp:
+	for subdir in $(SUBDIRS) ; do \
+	   cd $$subdir ; \
+	   if [ -x ./configure ] ; then ./configure ; fi ; \
+	   make ; \
+	done
+	touch subdir-stamp
 
 config.h:
 	./configure 
 
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
-	$(CC) $(CFLAGS) $($(@)_CFLAGS) -o $@ $($(@)_SOURCES) $($(@)_LDADD)
+	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) $($(@)_SOURCES) $($(@)_LDADD)
 
 $(lib_LIBRARIES) : $(SOURCES)
 	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
 		$($(@)_SOURCES) $($(@)_LDADD)
-	$(LD) $(LDFLAGS) $($(@)_LDFLAGS) -o lib$@.so.$(VERSION)	\
+	$(LD) -shared -soname=lib$@.so.$(MAJOR) 			\
+		$(LDFLAGS) $($(@)_LDFLAGS) -o lib$@.so.$(VERSION) 	\
 		`echo $($(@)_SOURCES) | sed 's/\.c/\.o/g'`
 	ar rs lib$(@).a *.o
 
 clean:
-	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) *.o 
+	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) $(lib_LIBRARIES) subdir-stamp *.o 
 
 distclean: clean
 	rm -f config.mk config.sym config.h
