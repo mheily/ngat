@@ -6,10 +6,9 @@ pkgdata_DATA      = Makefile configure
 ngat_SOURCES      = main.c
 ngat_CFLAGS       = -g -O2 -Wall -Werror
 
-EXTRA_DIST        = config.mk
+EXTRA_DIST        = config.mk t/
 
-# A custom Makefile target
-
-testme:
-	rm -rf tmp ; mkdir tmp ; ./configure --prefix=./tmp ; \
-	make install && find ./tmp
+# Run the unit test suite
+#
+test:
+	cd t ; make
