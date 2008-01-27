@@ -85,7 +85,7 @@ There are some predefined Bourne shell functions that can be used in configure.i
 in the /usr/include directory.
 </dd>
 
-<h3>Makefile.am</h3>
+<h3>Compatibility</h3>
 
 NGAT uses the Automake syntax in Makefile.am.
 
@@ -103,11 +103,19 @@ man1_MANS, man2_MANS, man3_MANS, etc. NGAT only supports man_MANS.
 
 In addition, as an extension, NGAT requires the use of the 'SOURCES' variable. The SOURCES variable should list all source code files in the project. 
 
+<h3>Bugs</h3>
+
+<ul>
+<li>The SUBDIRS variable is only supported when running 'make build' and not for other compilation targets. 
+</ul>
+
+<h3>Variables</h3>
 <p>
 Supported Automake variables are:
 <p>
 
 <dt>EXTRA_DIST</dt><dd>Extra files to be included in the source distribution</dd>
+<dt>SUBDIRS</dt><dd>Subdirectories to descend into (but see Compatibility)</dd>
 <dt>lib_LIBRARIES</dt><dd>Libraries to be created</dd>
 <dt>bin_PROGRAMS</dt><dd>Programs to be installed under BINDIR</dd>
 <dt>sbin_PROGRAMS</dt><dd>Programs to be installed under SBINDIR</dd>
