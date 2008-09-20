@@ -18,3 +18,5 @@ include Makefile.inc
 test:
 	cd t ; make
 
+edit:
+	$(EDITOR) configure* Makefile* index.html *.[ch]
