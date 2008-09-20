@@ -8,20 +8,13 @@ dd { padding-top: 0.2em; }
 </style>
 <body>
 
-<h1>Next-generation autotools</h1>
+<h1>Next-generation Autotools</h1>
 
-The "next-generation autotools" project (NGAT) is an effort to replace the current combination of GNU Autoconf, Automake, and Libtool with a faster, simpler, and more modern tool.
+The "next-generation autotools" project (NGAT) is an effort to replace the current combination of GNU Autoconf, Automake, and Libtool with a faster, simpler, and more modern tool. 
 
 <h2>Rationale</h2>
 
-GNU autotools are bloated, complex, and painfully slow to use. They clutter up your project with a bunch of generated files. Not everyone wants to learn macro programming in M4 just to be able to build a C program.
-
-<h2>Differences</h2>
-
-Shell script and Makefile
-<ul>
-
-</ul>
+GNU autotools are bloated, complex, filled with historical cruft, and painfully slow to use. They clutter up your project with a bunch of generated files. Not everyone wants to learn macro programming in M4 just to be able to build a C program.
 
 <h2>Supported makefile targets</h2>
 
@@ -37,28 +30,35 @@ NGAT provides the following Makefile targets:
 <tr><td>distclean<td>Remove all generated object code and temporary files</tr>
 </table>
 
+<h2>Supported Platforms</h2>
+
+NGAT is composed of two parts: a Bourne shell script, and a Makefile. It should work on any POSIX platform that has make(1) and sh(1). It has been tested on OpenBSD, MacOS X, and Linux. It does not support building projects on Microsoft&reg; Windows&reg;, unless you use Cygwin to provide a complete POSIX environment.
+
 <h2>Download</h2>
 
-To use NGAT in your project, you need two files: the Makefile and the configure script.
+To use NGAT in your project, you need two files: the Makefile.inc and the configure script.
 <p>
-<a href="Makefile">Download the Makefile here</a><br>
+<a href="Makefile.inc">Download the Makefile.inc here</a><br>
 <a href="configure">Download the configure script here</a><br>
 <p>
 The source code is available from the Subversion repository and may be downloaded using the following command:
-
-
 
 <pre>
 svn checkout http://ngat.googlecode.com/svn/trunk/ ngat-read-only
 </pre>
 
+<h2>Usage</h2>
+
+The following steps show how to use NGAT to build a project.
+<ol>
+<li>Download configure and Makefile.inc, and put them in the project's top-level directory.
+<li>Create a file named <em>configure.in</em> [TODO-how?]
+<li>Create a <em>Makefile</em> containing [TODO-what?]
+</ol>
+
 <h2>Configuration</h2>
 
 <h3>configure.in</h3>
-
-Unlike Autoconf, the <i>configure.in</i> file in NGAT is a shell script.
-
-<iframe src="configure.in" width="90%" height="*"></iframe>
 
 <h4>Variables</h4>
 
@@ -87,16 +87,13 @@ in the /usr/include directory.
 
 <h3>Compatibility</h3>
 
-NGAT uses the Automake syntax in Makefile.am.
-
-<iframe src="Makefile.am" width="90%" height="100%"></iframe>
-
-HOWEVER, there are a few incompatibilies:
+NGAT tries to use the same terminology and syntax as Automake.
+However, there are currently a few incompatibilies:
 <p>
 <ul>
 <li>Automake supports a generic man_MANS variable as well as individual
 man1_MANS, man2_MANS, man3_MANS, etc. NGAT only supports man_MANS.
-<li>NGAT considers manpages to be part of the distribution, so use man_MANS instead of dist_man_MANS
+<li>GNU hates manpages, so Automake doesn't include them in "make dist" by default. NGAT assumes that manpages are real, and does include them in "make dist". so use man_MANS instead of dist_man_MANS
 <li>Use CFLAGS to store default compiler flags, not AM_CFLAGS
 <li>Automake defines the variable HAVE_CONFIG_H when compiling; NGAT does not support this variable
 </ul>
@@ -111,6 +108,12 @@ In addition, as an extension, NGAT requires the use of the 'SOURCES' variable. T
 
 <h3>Variables</h3>
 <p>
+The following variables are required:<p>
+<ul>
+<li>PACKAGE</li>
+<li>VERSION</li>
+<li>SOURCES</li>
+</ul>
 Supported Automake variables are:
 <p>
 
