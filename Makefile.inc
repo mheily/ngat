@@ -78,7 +78,7 @@ clean:
 	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) $(lib_LIBRARIES) subdir-stamp *.o 
 
 distclean: clean
-	rm -f config.mk config.sym config.h
+	rm -f config.mk config.h
 
 check: $(check_PROGRAMS)
 	for prog in $(TESTS) ; do $$prog ; done
