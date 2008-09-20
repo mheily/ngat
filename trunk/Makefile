@@ -1,12 +1,14 @@
 
-SOURCES           = $(ngat_SOURCES)
-bin_PROGRAMS      = ngat
-pkgdata_DATA      = Makefile configure
+SOURCES = 		$(ngat_SOURCES)
+bin_PROGRAMS = 	newproject
+pkgdata_DATA =	configure Makefile.inc
+EXTRA_DIST =	index.html
+man_MANS =		newproject.1
 
-ngat_SOURCES      = main.c
-ngat_CFLAGS       = -g -O2 -Wall -Werror
+newproject_SOURCES = 	main.c
+newproject_CFLAGS = 	-g -O2 -Wall -Werror
 
-EXTRA_DIST        = index.html
+
 # FIXME: add t/ to EXTRA_DIST; need to support subdirectories
 
 include Makefile.inc
