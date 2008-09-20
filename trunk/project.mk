@@ -38,7 +38,7 @@ CFLAGS ?=   -g -O0 -Wall -Werror
 
 FILES = 	$(SOURCES) $(EXTRA_DIST) $(man_MANS) \
 		$(data_DATA) $(pkgdata_DATA) \
-		configure configure.in config.mk Makefile.am Makefile
+		configure config.mk Makefile
 MAJOR = 	`echo $(VERSION) | awk -F. '{ $$1 }'`
 DISTDIR = 	$(PACKAGE)-$(VERSION)
 
@@ -56,12 +56,12 @@ build: config.h subdir-stamp $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $
 	@true
 
 subdir-stamp:
-	for subdir in $(SUBDIRS) ; do \
+	@for subdir in $(SUBDIRS) ; do \
 	   cd $$subdir ; \
-	   if [ -x ./configure ] ; then ./configure ; fi ; \
+	   if [ -x ./configure ] ; then echo "Running ./configure in $$subdir.." ; ./configure ; fi ; \
 	   make ; \
 	done
-	touch subdir-stamp
+	@touch subdir-stamp
 
 config.h:
 	@./configure
@@ -88,13 +88,13 @@ clean:
 	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) $(lib_LIBRARIES) subdir-stamp *.o 
 
 distclean: clean
-	rm -f config.var config.mk config.h
+	rm -f config.var config.h
 
 check: $(check_PROGRAMS)
 	for prog in $(TESTS) ; do $$prog ; done
 
 dist: 
-	if [ -d $(DISTDIR) ] ; then \
+	@if [ -d $(DISTDIR) ] ; then \
 		cd $(DISTDIR) && rm -f $(FILES) && cd .. && rmdir $(DISTDIR) ; \
 	fi
 	mkdir $(DISTDIR)
@@ -104,18 +104,18 @@ dist:
 	rmdir $(DISTDIR)
 
 install: build
-	for lib in $(lib_LIBRARIES) ; do                         \
+	for lib in $(lib_LIBRARIES) ; do                          \
 	  library=lib$$lib.so.$(VERSION)			            ; \
 	  $(INSTALL) -Ds -m 644 $$library $(LIBDIR)/$$library 	; \
 	  ln -s $$library $(LIBDIR)/lib$$lib.so.$(MAJOR)	    ; \
 	done
-	for bin in $(bin_PROGRAMS) ; do                          \
+	for bin in $(bin_PROGRAMS) ; do                           \
 	  $(INSTALL) -D -m 755 $$bin $(BINDIR)/$$bin		    ; \
 	done
-	for sbin in $(sbin_PROGRAMS) ; do                        \
+	for sbin in $(sbin_PROGRAMS) ; do                         \
 	  $(INSTALL) -D -m 755 $$sbin $(SBINDIR)/$$sbin		    ; \
 	done
-	for hdr in $(include_HEADERS) ; do                       \
+	for hdr in $(include_HEADERS) ; do                        \
 	  $(INSTALL) -D -m 644 $$hdr $(INCLUDEDIR)/$$hdr	    ; \
 	done
 	for man in $(man_MANS) $(dist_man_MANS) ; do	          \
@@ -132,7 +132,7 @@ install: build
 	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
 
 uninstall:
-	for lib in $(lib_LIBRARIES) ; do                         \
+	for lib in $(lib_LIBRARIES) ; do                          \
 	  library=lib$$lib.so.$(VERSION)			            ; \
 	  rm $(LIBDIR)/$$library                                ; \
 	  rm $(LIBDIR)/lib$$lib.so.$(MAJOR)	                    ; \
@@ -140,7 +140,7 @@ uninstall:
 	for bin in $(bin_PROGRAMS) ; do rm $(BINDIR)/$$bin ; done
 	for bin in $(sbin_PROGRAMS) ; do rm $(SBINDIR)/$$bin ; done
 	for hdr in $(include_HEADERS) ; do rm $(SBINDIR)/$hdr ; done
-	for man in $(man_MANS) $(dist_man_MANS); do              \
+	for man in $(man_MANS) $(dist_man_MANS); do               \
         section=`echo $$man | awk -F. '{ $$2 }'`		    ; \
         rm $(MANDIR)/man$$section/$$man.gz                  ; \
     done
