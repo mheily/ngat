@@ -1,6 +1,6 @@
 #		$Id$
 #
-# Copyright (c) 2007 Mark Heily <mark@heily.com>
+# Copyright (c) 2007-2008 Mark Heily <mark@heily.com>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -34,6 +34,7 @@ CC ?=		cc
 LD ?=		ld
 INSTALL ?=  /usr/bin/install
 PKGDATADIR ?= $(DATADIR)/$(PACKAGE)
+CFLAGS ?=   -g -O0 -Wall -Werror
 
 FILES = 	$(SOURCES) $(EXTRA_DIST) $(man_MANS) \
 		$(data_DATA) $(pkgdata_DATA) \
@@ -96,48 +97,46 @@ dist:
 	rmdir $(DISTDIR)
 
 install: build
-	@for lib in $(lib_LIBRARIES) ; do                       \
+	for lib in $(lib_LIBRARIES) ; do                         \
 	  library=lib$$lib.so.$(VERSION)			            ; \
-	  $(INSTALL) -Ds -m 644 $$library $(LIBDIR)/$$library 	    ; \
+	  $(INSTALL) -Ds -m 644 $$library $(LIBDIR)/$$library 	; \
 	  ln -s $$library $(LIBDIR)/lib$$lib.so.$(MAJOR)	    ; \
 	done
-	@for bin in $(bin_PROGRAMS) ; do                        \
-	  $(INSTALL) -D -m 755 $$bin $(BINDIR)/$$bin		        ; \
+	for bin in $(bin_PROGRAMS) ; do                          \
+	  $(INSTALL) -D -m 755 $$bin $(BINDIR)/$$bin		    ; \
 	done
-	@for sbin in $(sbin_PROGRAMS) ; do                      \
+	for sbin in $(sbin_PROGRAMS) ; do                        \
 	  $(INSTALL) -D -m 755 $$sbin $(SBINDIR)/$$sbin		    ; \
 	done
-	@for hdr in $(include_HEADERS) ; do                     \
-	  do $(INSTALL) -D -m 644 $$hdr $(INCLUDEDIR)/$$hdr	    ; \
+	for hdr in $(include_HEADERS) ; do                       \
+	  $(INSTALL) -D -m 644 $$hdr $(INCLUDEDIR)/$$hdr	    ; \
 	done
-	@for man in $(man_MANS) $(dist_man_MANS)			    ; \
-	do 							  \
-	  section=`echo $$man | awk -F. '{ $$2 }'`		; \
-	  $(INSTALL) -D -m 644 $$man $(MANDIR)/man$$section/$$man	; \
-	  gzip $(MANDIR)/man$$section/$$man			; \
+	for man in $(man_MANS) $(dist_man_MANS) ; do	          \
+	  section=`echo $$man | awk -F. '{ $$2 }'`		        ; \
+	  $(INSTALL) -D -m 644 $$man $(MANDIR)/man$$section/$$man ; \
+	  gzip -f $(MANDIR)/man$$section/$$man		           	; \
 	done
-	for data in $(data_DATA) 				; \
-	  do $(INSTALL) -D -m 644 $$data $(DATADIR)/$$data		; \
+	for data in $(data_DATA) ; do 				              \
+      $(INSTALL) -D -m 644 $$data $(DATADIR)/$$data		    ; \
 	done
-	for data in $(pkgdata_DATA) 				; \
-	  do $(INSTALL) -D -m 644 $$data $(PKGDATADIR)/$$data	; \
+	for data in $(pkgdata_DATA) ; do 	        			  \
+	  $(INSTALL) -D -m 644 $$data $(PKGDATADIR)/$$data	    ; \
 	done
 	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
 
 uninstall:
-	@for lib in $(lib_LIBRARIES) ; do                         \
+	for lib in $(lib_LIBRARIES) ; do                         \
 	  library=lib$$lib.so.$(VERSION)			            ; \
 	  rm $(LIBDIR)/$$library                                ; \
 	  rm $(LIBDIR)/lib$$lib.so.$(MAJOR)	                    ; \
 	done
-	@for bin in $(bin_PROGRAMS) ; do rm $(BINDIR)/$$bin ; done
-	@for bin in $(sbin_PROGRAMS) ; do rm $(SBINDIR)/$$bin ; done
-	@for hdr in $(include_HEADERS) ; do rm $(SBINDIR)/$hdr ; done
-	@for man in $(man_MANS) $(dist_man_MANS); do              \
+	for bin in $(bin_PROGRAMS) ; do rm $(BINDIR)/$$bin ; done
+	for bin in $(sbin_PROGRAMS) ; do rm $(SBINDIR)/$$bin ; done
+	for hdr in $(include_HEADERS) ; do rm $(SBINDIR)/$hdr ; done
+	for man in $(man_MANS) $(dist_man_MANS); do              \
         section=`echo $$man | awk -F. '{ $$2 }'`		    ; \
         rm $(MANDIR)/man$$section/$$man.gz                  ; \
     done
-	@for dat in $(data_DATA) ; do rm $(DATADIR)/$$dat ; done
-	@for dat in $(pkgdata_DATA) ; do rm $(PKGDATADIR)/$$dat ; done
-	@if [ `id -u` -eq '0' ] ; then ldconfig ; fi
-
+	for dat in $(data_DATA) ; do rm $(DATADIR)/$$dat ; done
+	for dat in $(pkgdata_DATA) ; do rm $(PKGDATADIR)/$$dat ; done
+	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
