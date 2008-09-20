@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <err.h>
+#include <unistd.h>
 
 void
 usage(void)
@@ -30,6 +32,9 @@ usage(void)
 int
 main(int argc, char **argv)
 {
+    if (access("configure", F_OK) == 0)
+        errx(1, "ERROR: A project already exists in this directory.");
+
 	if (argc > 1 && strcmp(argv[1], "init") == 0) {
 		puts("hello world");
 	} else {
