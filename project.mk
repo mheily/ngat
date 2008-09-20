@@ -64,10 +64,17 @@ subdir-stamp:
 	touch subdir-stamp
 
 config.h:
-	./configure 
+	@./configure
+
+config.var:
+	@echo "# Automatically generated -- do not edit" > config.var
+	@echo "PACKAGE=\"$(PACKAGE)\"" >> config.var
+	@echo "VERSION=\"$(VERSION)\"" >> config.var
+	@echo "TEST_SYMBOLS=\"$(TEST_SYMBOLS)\"" >> config.var
+	@echo "TEST_HEADERS=\"$(TEST_HEADERS)\"" >> config.var
 
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
-	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) $($(@)_SOURCES) $($(@)_LDADD)
+	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) -include config.h $($(@)_SOURCES) $($(@)_LDADD)
 
 $(lib_LIBRARIES) : $(SOURCES)
 	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
@@ -81,7 +88,7 @@ clean:
 	rm -f $(bin_PROGRAMS) $(sbin_PROGRAMS) $(lib_LIBRARIES) subdir-stamp *.o 
 
 distclean: clean
-	rm -f config.mk config.h
+	rm -f config.var config.mk config.h
 
 check: $(check_PROGRAMS)
 	for prog in $(TESTS) ; do $$prog ; done

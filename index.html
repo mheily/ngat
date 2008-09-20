@@ -33,15 +33,10 @@ NGAT provides the following Makefile targets:
 
 <h2>Supported Platforms</h2>
 
-NGAT is composed of two parts: a Bourne shell script, and a Makefile. It should work on any POSIX platform that has make(1) and sh(1). It has been tested on OpenBSD, MacOS X, and Linux. It does not support building projects on Microsoft&reg; Windows&reg;, unless you use Cygwin to provide a complete POSIX environment.
+NGAT is composed of two parts: a Bourne shell script, and a Makefile. It should work on any POSIX platform that has make(1) and sh(1). Both GNU make and BSD make is supported. It has been tested on OpenBSD, MacOS X, and Linux. It does not support building projects on Microsoft&reg; Windows&reg;, unless you use Cygwin to provide a complete POSIX environment.
 
 <h2>Download</h2>
 
-To use NGAT in your project, you need two files: the Makefile.inc and the configure script.
-<p>
-<a href="Makefile.inc">Download the Makefile.inc here</a><br>
-<a href="configure">Download the configure script here</a><br>
-<p>
 The source code is available from the Subversion repository and may be downloaded using the following command:
 
 <pre>
@@ -52,9 +47,10 @@ svn checkout http://ngat.googlecode.com/svn/trunk/ ngat-read-only
 
 The following steps show how to use NGAT to build a project.
 <ol>
-<li>Download configure and Makefile.inc, and put them in the project's top-level directory.
-<li>Create a file named <em>configure.in</em> [TODO-how?]
-<li>Create a <em>Makefile</em> containing [TODO-what?]
+<li>Download and install NGAT
+<li>If your project already has a Makefile, move it out of the way.
+<li>Run <em>newproject</em> in the top-level project directory. This will generate the <em>config.mk</em> and <em>configure</em> files.
+<li>Edit the generated <em>Makefile</em> to suit your needs.
 </ol>
 
 <h2>Configuration</h2>
