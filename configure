@@ -129,7 +129,7 @@ define_str "SBINDIR" "$cf_sbindir" "$cf_prefix/sbin"
 define_str "LIBDIR" "$cf_libdir" "$cf_prefix/lib"
 define_str "INCLUDEDIR" "$cf_includedir" "$cf_prefix/include"
 define_str "DATADIR" "$cf_datadir" "$cf_prefix/share"
-define_str "PKGDATADIR" "$cf_pkgdatadir" "$cf_prefix/share/$cf_PACKAGE"
+define_str "PKGDATADIR" "$cf_pkgdatadir" "$cf_prefix/share/$PACKAGE"
 define_str "MANDIR" "$cf_mandir" "$cf_prefix/share/man"
 
 printf "\n#endif /* _CONFIG_H */\n" >> config.h
