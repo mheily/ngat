@@ -83,8 +83,14 @@ done
 # Generate a symbol table from the standard C library
 nm /usr/lib/libc.a 2>/dev/null | grep 'T ' > config.sym
 
-# Run any tests given by configure.in
-test -x ./configure.in && . ./configure.in
+# Get interesting variables from the Makefile
+#
+if [ ! -f config.var ] ; then
+  make config.var >/dev/null
+  chmod 755 config.var
+fi
+. ./config.var
+rm config.var
 
 # If PACKAGE is not provided, use the name of the current directory
 # (without any version information)
@@ -108,12 +114,12 @@ do
 	test -z "$val" || echo "$id=$val" >> config.mk
 done
 
-for symbol in $CHECK_FUNCTIONS
+for symbol in $TEST_SYMBOLS
 do
   check_symbol "$symbol"
 done
 
-for header in $CHECK_HEADERS
+for header in $TEST_HEADERS
 do
   check_header "$header"
 done

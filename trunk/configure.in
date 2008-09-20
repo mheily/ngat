@@ -1,5 +1,0 @@
-PACKAGE=ngat
-VERSION=0.4
-
-check_symbol strlcpy asprintf
-check_header event.h regex.h
