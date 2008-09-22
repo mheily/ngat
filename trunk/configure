@@ -52,10 +52,16 @@ done
 check_header() {
 for hdr in $@
 do
-  exists=`find /usr/include -name $hdr | wc -l`
+  echo "#include <$hdr>" | gcc -x c -fsyntax-only - 2>/dev/null
+  if [ $? -eq 0 ] ; then
+      result=1
+  else
+      result=0
+  fi
+
   HEADER=`echo $hdr | tr 'a-z' 'A-Z' | tr '.' '_'`
-  echo "#define HAVE_${HEADER} $exists" >> config.h
-  report $hdr $count
+  echo "#define HAVE_${HEADER} $result" >> config.h
+  report $hdr $result
 done
 }
 
