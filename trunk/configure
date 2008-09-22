@@ -41,7 +41,7 @@ report() {
 check_symbol() {
 for sym in $@
 do
-  count=`grep -c $sym config.sym`
+  count=`egrep -c "^${sym}$" config.sym`
   SYMBOL=`echo $sym | tr 'a-z' 'A-Z'`
   echo "#define HAVE_${SYMBOL} $count" >> config.h
   report $sym $count
@@ -81,7 +81,15 @@ do
 done
 
 # Generate a symbol table from the standard C library
-nm /usr/lib/libc.a 2>/dev/null | grep 'T ' > config.sym
+# Note that this fails in some cases:
+#   1. When the symbol is prefixed somehow. Example is
+#      asprintf(3) in glibc; the symbol name is __asprintf
+#   1. When a macro is used to emulate the symbol
+#
+# A better check would be to compile a program like this:
+#          printf "#include <unistd.h>\n#include <stdlib.h>\nint main() { exit(1); }\n" | gcc -x c -fsyntax-only - && echo hi
+#
+nm /usr/lib/libc.a 2>/dev/null | grep 'T ' |sed 's/.* T //' > config.sym
 
 # Get interesting variables from the Makefile
 #

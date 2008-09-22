@@ -1,7 +1,7 @@
 PACKAGE=		ngat
 VERSION=		0.4
 
-TEST_SYMBOLS =	strlcpy asprintf
+TEST_SYMBOLS =	strlcpy asprintf crypt getspnam
 TEST_HEADERS =  event.h regex.h 
 
 SOURCES = 		$(newproject_SOURCES)
