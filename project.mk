@@ -74,7 +74,7 @@ config.var:
 	@echo "TEST_HEADERS=\"$(TEST_HEADERS)\"" >> config.var
 
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
-	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) -include config.h $($(@)_SOURCES) $($(@)_LDADD)
+	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) -include config.h $($(@)_SOURCES) $(LDADD) $($(@)_LDADD)
 
 $(lib_LIBRARIES) : $(SOURCES)
 	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
