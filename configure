@@ -41,7 +41,7 @@ report() {
 check_symbol() {
 for sym in $@
 do
-  count=`egrep -c "^${sym}$" config.sym`
+  count=`egrep -c "^_*${sym}$" config.sym`
   SYMBOL=`echo $sym | tr 'a-z' 'A-Z'`
   echo "#define HAVE_${SYMBOL} $count" >> config.h
   report $sym $count
