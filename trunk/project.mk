@@ -15,15 +15,6 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-# Differences btwn Automake and mconf:
-#   - man_MANS are considered source and included in `make dist'
-#     do not use dist_man_MANS
-#   - man1_MANS, man2_MANS, etc., are not supported; use man_MANS instead
-#   - Use CFLAGS instead of AM_CFLAGS
-#   HAVE_CONFIG_H is not defined and should not be used in program sources.
-#   A global SOURCES variable is required, and should contain a list of
-#   all source code files in the project.
-
 default: build
 
 include config.mk
@@ -50,6 +41,8 @@ SBINDIR := $(DESTDIR)$(SBINDIR)
 INCLUDEDIR := $(DESTDIR)$(INCLUDEDIR)
 DATADIR := $(DESTDIR)$(DATADIR)
 PKGDATADIR := $(DESTDIR)$(PKGDATADIR)
+LOCALSTATEDIR := $(DESTDIR)$(LOCALSTATEDIR)
+PKGLOCALSTATEDIR := $(DESTDIR)$(PKGLOCALSTATEDIR)
 MANDIR := $(DESTDIR)$(MANDIR)
 
 build: config.h subdir-stamp $(lib_LIBRARIES) $(bin_PROGRAMS) $(sbin_PROGRAMS) $(data_DATA) $(pkgdata_DATA)
@@ -73,9 +66,13 @@ config.var:
 	@echo "TEST_SYMBOLS=\"$(TEST_SYMBOLS)\"" >> config.var
 	@echo "TEST_HEADERS=\"$(TEST_HEADERS)\"" >> config.var
 
+# Build a program
+# 
 $(bin_PROGRAMS) $(sbin_PROGRAMS) $(check_PROGRAMS) : $(SOURCES)
 	$(CC) -o $@ $(CFLAGS) $($(@)_CFLAGS) -include config.h $($(@)_SOURCES) $(LDADD) $($(@)_LDADD)
 
+# Build a shared library
+# 
 $(lib_LIBRARIES) : $(SOURCES)
 	$(CC) $(CFLAGS) $($(@)_CFLAGS) -fPIC -c \
 		$($(@)_SOURCES) $($(@)_LDADD)
@@ -129,6 +126,9 @@ install: build
 	for data in $(pkgdata_DATA) ; do 	        			  \
 	  $(INSTALL) -D -m 644 $$data $(PKGDATADIR)/$$data	    ; \
 	done
+	for dir in $(CREATE_DIRS) ; do 	        			  	  \
+	  $(INSTALL) -d -m 755 $$dir							; \
+	done
 	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
 
 uninstall:
@@ -147,3 +147,10 @@ uninstall:
 	for dat in $(data_DATA) ; do rm $(DATADIR)/$$dat ; done
 	for dat in $(pkgdata_DATA) ; do rm $(PKGDATADIR)/$$dat ; done
 	if [ `id -u` -eq '0' ] ; then ldconfig ; fi
+
+purge: uninstall
+	test -d "$(PKGDATADIR)" != "" && rm -rf $(PKGDATADIR)
+	test -d "$(PKGLOCALSTATEDIR)" != "" && rm -rf $(PKGLOCALSTATEDIR)
+	for dir in $(CREATE_DIRS) ; do rm -rf $$dir || true ; done
+# todo -- pkgconfig dir
+	

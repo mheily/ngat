@@ -4,6 +4,8 @@ VERSION=		0.4
 TEST_SYMBOLS =	strlcpy asprintf crypt getspnam
 TEST_HEADERS =  event.h regex.h 
 
+CREATE_DIRS =   $(PKGLOCALSTATEDIR)
+
 SOURCES = 		$(newproject_SOURCES)
 bin_PROGRAMS = 	newproject
 pkgdata_DATA =	configure project.mk
