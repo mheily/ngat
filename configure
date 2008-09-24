@@ -19,9 +19,12 @@
 
 define_str() {
   id=$1
-  if [ -n "$2" ] 
-   then val=$2
-  else val=$3
+  if [ -n "$2" ] ; then 
+      val=$2
+  else 
+      val=$3
+      lc_id=`echo $id | tr 'A-Z' 'a-z'`
+      eval "cf_${lc_id}=$val"
   fi
   echo "#define $id \"$val\"" >> config.h
   echo "$id=$val" >> config.mk
@@ -44,6 +47,7 @@ do
   count=`egrep -c "^_*${sym}$" config.sym`
   SYMBOL=`echo $sym | tr 'a-z' 'A-Z'`
   echo "#define HAVE_${SYMBOL} $count" >> config.h
+  echo "HAVE_${SYMBOL}=$count" >> config.mk
   report $sym $count
 done
 }
@@ -61,6 +65,7 @@ do
 
   HEADER=`echo $hdr | tr 'a-z' 'A-Z' | tr '.' '_'`
   echo "#define HAVE_${HEADER} $result" >> config.h
+  echo "HAVE_${HEADER}=$result" >> config.mk
   report $hdr $result
 done
 }
@@ -149,8 +154,13 @@ define_str "SBINDIR" "$cf_sbindir" "$cf_prefix/sbin"
 define_str "LIBDIR" "$cf_libdir" "$cf_prefix/lib"
 define_str "INCLUDEDIR" "$cf_includedir" "$cf_prefix/include"
 define_str "DATADIR" "$cf_datadir" "$cf_prefix/share"
-define_str "PKGDATADIR" "$cf_pkgdatadir" "$cf_prefix/share/$PACKAGE"
+define_str "LOCALSTATEDIR" "$cf_localstatedir" "/var"
 define_str "MANDIR" "$cf_mandir" "$cf_prefix/share/man"
+
+# Create 'PKG' prefixed variables by appending the package name.
+#
+define_str "PKGDATADIR" "$cf_pkgdatadir" "$cf_prefix/share/$PACKAGE"
+define_str "PKGLOCALSTATEDIR" "$cf_pkglocalstatedir" "$cf_localstatedir/$PACKAGE"
 
 printf "\n#endif /* _CONFIG_H */\n" >> config.h
 

@@ -26,7 +26,8 @@ NGAT provides the following Makefile targets:
 <tr><td>check<td>Build and execute the test suite</tr>
 <tr><td>dist<td>Create a compressed tarball of all source code and data</tr>
 <tr><td>install<td>Install files to the filesystem</tr>
-<tr><td>uninstall<td>Uninstall all files</tr>
+<tr><td>uninstall<td>Uninstall all program files, libraries and documentation. Does not delete any data or configuration files.</tr>
+<tr><td>purge<td>Uninstall and delete everything including data and configuration files.</tr>
 <tr><td>clean<td>Remove all generated object files (*.o)</tr>
 <tr><td>distclean<td>Remove all generated object code and temporary files</tr>
 </table>
@@ -67,6 +68,9 @@ A couple of variables must be defined within configure.in:
 
 <dt>VERSION</dt>
 <dd>The version number of the project</dd>
+
+<dt>CREATE_DIRS</dt>
+<dd>A list of directories to be created by the "make install" target. A typical value might include PKGDATADIR and it's subdirectories. This directory, and everything in it, will be deleted during "make purge" but will not be removed after a "make uninstall".</dd>
 
 <h4>Functions</h4>
 
