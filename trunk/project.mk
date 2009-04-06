@@ -88,7 +88,7 @@ distclean: clean
 	rm -f config.var config.h
 
 check: $(check_PROGRAMS)
-	for prog in $(TESTS) ; do $$prog ; done
+	for prog in $(TESTS) ; do ./$$prog ; done
 
 dist: 
 	@if [ -d $(DISTDIR) ] ; then \
