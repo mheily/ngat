@@ -1,0 +1,1 @@
+A smaller, faster, and backwards-compatible replacement for the GNU Autotools suite of programs.
